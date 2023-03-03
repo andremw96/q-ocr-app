@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,22 +32,80 @@
             android:layout_weight="2"
             android:scrollbars="vertical"
             tools:text="Lorem Ipsum" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layoutAction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_gravity="bottom">
-
-        <Button
-            android:id="@+id/btnSummarize"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layoutAction"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Summarize"/>
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:visibility="visible">
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:checkedChip="@+id/chip_study_note"
+                    app:singleLine="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_study_note"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/study_note" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_summary"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/summary" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_keywords"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/keywords" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_outline"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/outline" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_translate"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/translate" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_solve"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/solve" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/btnGenerate"
+                android:text="@string/generate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </FrameLayout>

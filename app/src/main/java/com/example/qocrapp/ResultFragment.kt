@@ -19,6 +19,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ResultFragment(
     private val extractedText: String,
+    private val actionGenerate: ActionGenerate,
 ) : DialogFragment() {
 
     private var _binding: ResultFragmentBinding? = null
@@ -42,16 +43,18 @@ class ResultFragment(
         binding.textView.movementMethod = ScrollingMovementMethod()
 
         binding.progressCircular.visibility = View.VISIBLE
+        isCancelable = false
         GlobalScope.launch(Dispatchers.IO) {
             val result = chatGptService.completions(
                 CompletionRequest(
-                    prompt = "Summarize and remove unknown word: $extractedText"
+                    prompt = "${context?.getString(actionGenerate.stringResource)} and remove unknown word: $extractedText"
                 )
             )
             GlobalScope.launch(Dispatchers.Main) {
+                isCancelable = true
                 when (result.code()) {
                     200 -> {
-                        binding.textView.text = "Summarized Article: ${result.body()!!.choices[0].text}"
+                        binding.textView.text = "${context?.getString(actionGenerate.stringResource)}: ${result.body()!!.choices[0].text}"
                         binding.progressCircular.visibility = View.GONE
                     }
                     else -> {

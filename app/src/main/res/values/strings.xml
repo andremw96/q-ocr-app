@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">QOCRapp</string>
+    <string name="study_note">Study Note</string>
+    <string name="summary">Summary</string>
+    <string name="keywords">Keywords</string>
+    <string name="outline">Outline</string>
+    <string name="translate">Translate</string>
+    <string name="solve">Solve</string>
+    <string name="unknown">Unknown</string>
+    <string name="generate">Generate</string>
+
+    <string name="study_note_action">Study Note</string>
+    <string name="summary_action">Summary</string>
+    <string name="keywords_action">Keywords</string>
+    <string name="outline_action">Outline</string>
+    <string name="translate_action">Translate</string>
+    <string name="solve_action">Solve</string>
+    <string name="unknown_action">Unknown</string>
 </resources>

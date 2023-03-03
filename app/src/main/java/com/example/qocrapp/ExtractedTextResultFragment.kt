@@ -11,6 +11,18 @@ import com.example.qocrapp.databinding.ExtractedTextResultFragmentBinding
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
+enum class ActionGenerate(
+    val stringResource: Int,
+) {
+    STUDY_NOTE(R.string.study_note_action),
+    SUMMARY(R.string.summary_action),
+    KEYWORDS(R.string.keywords_action),
+    OUTLINE(R.string.outline_action),
+    TRANSLATE(R.string.translate_action),
+    SOLVE(R.string.solve_action),
+    UNKNOWN(R.string.unknown)
+}
+
 class ExtractedTextResultFragment(
     private val bitmap: Bitmap,
 ) : DialogFragment() {
@@ -56,12 +68,27 @@ class ExtractedTextResultFragment(
                 binding.textView.text = e.localizedMessage
             }
 
-        binding.btnSummarize.setOnClickListener {
+        binding.btnGenerate.setOnClickListener {
+            val checkedAction = checkedChipToActionGenerate(binding.chipGroupAction.checkedChipId)
+
             ResultFragment(
-                extractedText = binding.textView.text.toString()
+                extractedText = binding.textView.text.toString(),
+                actionGenerate = checkedAction
             ).show(parentFragmentManager, ResultFragment::class.simpleName)
 
             dismiss()
+        }
+    }
+
+    private fun checkedChipToActionGenerate(checkedChipId: Int): ActionGenerate {
+        return when (checkedChipId) {
+            R.id.chip_study_note -> ActionGenerate.STUDY_NOTE
+            R.id.chip_summary -> ActionGenerate.SUMMARY
+            R.id.chip_keywords -> ActionGenerate.KEYWORDS
+            R.id.chip_outline -> ActionGenerate.OUTLINE
+            R.id.chip_translate -> ActionGenerate.TRANSLATE
+            R.id.chip_solve -> ActionGenerate.SOLVE
+            else -> ActionGenerate.UNKNOWN
         }
     }
 }
