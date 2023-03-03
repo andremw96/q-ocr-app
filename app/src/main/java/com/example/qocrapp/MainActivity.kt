@@ -1,7 +1,7 @@
 package com.example.qocrapp
 
 import android.content.pm.PackageManager
-import android.os.Build
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,12 +11,19 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.qocrapp.api.ChatGptService
+import com.example.qocrapp.api.CompletionRequest
 import com.example.qocrapp.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 
 @ExperimentalGetImage
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object {
@@ -32,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
 
     private lateinit var cameraExecutor: ExecutorService
+
+    @Inject
+    lateinit var chatGptService: ChatGptService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,9 +97,7 @@ class MainActivity : AppCompatActivity() {
                     val bitmapImage = binding.viewFinder.bitmap
 
                     bitmapImage?.let {
-                        ResultFragment(
-                            bitmap = bitmapImage,
-                        ).show(supportFragmentManager, ResultFragment::class.simpleName)
+                        openResultFragment(it)
                     }
                 }
 
@@ -98,6 +106,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun openResultFragment(bitmapImage: Bitmap) {
+        ResultFragment(
+            bitmap = bitmapImage,
+            actionCallback = { extractedText ->
+                GlobalScope.launch {
+                    val result = chatGptService.completions(
+                        CompletionRequest(
+                            prompt = "Summarize this article: $extractedText"
+                        )
+                    )
+                    when (result.code()) {
+                        200 -> {
+                            Log.d(TAG, "Summarized Article: ${result.body()!!.choices[0].text}")
+                        }
+                        else -> {
+                            Log.e(TAG, "Error Summarizing ${result.message()}")
+                        }
+                    }
+                }
+            }
+        ).show(supportFragmentManager, ResultFragment::class.simpleName)
     }
 
     private fun startCamera() {

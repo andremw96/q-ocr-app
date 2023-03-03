@@ -13,6 +13,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
 class ResultFragment(
     private val bitmap: Bitmap,
+    private val actionCallback: (String) -> Unit,
 ) : DialogFragment() {
 
     private var _binding: ResultFragmentBinding? = null
@@ -54,5 +55,12 @@ class ResultFragment(
 
                 binding.textView.text = e.localizedMessage
             }
+
+        binding.btnSummarize.setOnClickListener {
+            actionCallback(
+                binding.textView.text.toString()
+            )
+            dismiss()
+        }
     }
 }
