@@ -11,15 +11,10 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.qocrapp.api.ChatGptService
-import com.example.qocrapp.api.CompletionRequest
 import com.example.qocrapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import javax.inject.Inject
 
 
 @ExperimentalGetImage
@@ -39,9 +34,6 @@ class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
 
     private lateinit var cameraExecutor: ExecutorService
-
-    @Inject
-    lateinit var chatGptService: ChatGptService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     val bitmapImage = binding.viewFinder.bitmap
 
                     bitmapImage?.let {
-                        openResultFragment(it)
+                        openExtractedTextResultFragment(it)
                     }
                 }
 
@@ -108,27 +100,13 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun openResultFragment(bitmapImage: Bitmap) {
-        ResultFragment(
+    private fun openExtractedTextResultFragment(bitmapImage: Bitmap) {
+        ExtractedTextResultFragment(
             bitmap = bitmapImage,
             actionCallback = { extractedText ->
-                GlobalScope.launch {
-                    val result = chatGptService.completions(
-                        CompletionRequest(
-                            prompt = "Summarize this article: $extractedText"
-                        )
-                    )
-                    when (result.code()) {
-                        200 -> {
-                            Log.d(TAG, "Summarized Article: ${result.body()!!.choices[0].text}")
-                        }
-                        else -> {
-                            Log.e(TAG, "Error Summarizing ${result.message()}")
-                        }
-                    }
-                }
+
             }
-        ).show(supportFragmentManager, ResultFragment::class.simpleName)
+        ).show(supportFragmentManager, ExtractedTextResultFragment::class.simpleName)
     }
 
     private fun startCamera() {

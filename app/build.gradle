@@ -25,13 +25,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"https://api.openai.com/v1/\""
-            buildConfigField "String", "CHATGPT_API_KEY", "\"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\""
+            buildConfigField "String", "CHATGPT_API_KEY", getProps("chat.gpt.api.key")
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"https://api.openai.com/v1/\""
-            buildConfigField "String", "CHATGPT_API_KEY", "\"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\""
+            buildConfigField "String", "CHATGPT_API_KEY", getProps("chat.gpt.api.key")
         }
     }
     compileOptions {
@@ -46,6 +46,18 @@ android {
         viewBinding = true
     }
 }
+
+def getProps(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propName]
+    } else {
+        return "";
+    }
+}
+
 
 dependencies {
 

@@ -1,23 +1,31 @@
 package com.example.qocrapp
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.example.qocrapp.api.ChatGptService
+import com.example.qocrapp.api.CompletionRequest
 import com.example.qocrapp.databinding.ResultFragmentBinding
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ResultFragment(
-    private val bitmap: Bitmap,
-    private val actionCallback: (String) -> Unit,
+    private val extractedText: String,
 ) : DialogFragment() {
 
     private var _binding: ResultFragmentBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var chatGptService: ChatGptService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,37 +38,27 @@ class ResultFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.imageView.setImageBitmap(bitmap)
-
         binding.textView.movementMethod = ScrollingMovementMethod()
 
-        val detector = FirebaseVision.getInstance()
-            .onDeviceTextRecognizer
-
-        val image = FirebaseVisionImage.fromBitmap(
-            bitmap
-        )
-
         binding.progressCircular.visibility = View.VISIBLE
-        detector.processImage(image)
-            .addOnSuccessListener { firebaseVisionText ->
-                binding.progressCircular.visibility = View.GONE
-
-                val resultText = firebaseVisionText.text.replace("\n", " ")
-
-                binding.textView.text = resultText
-            }
-            .addOnFailureListener { e ->
-                binding.progressCircular.visibility = View.GONE
-
-                binding.textView.text = e.localizedMessage
-            }
-
-        binding.btnSummarize.setOnClickListener {
-            actionCallback(
-                binding.textView.text.toString()
+        GlobalScope.launch(Dispatchers.IO) {
+            val result = chatGptService.completions(
+                CompletionRequest(
+                    prompt = "Summarize this article: $extractedText"
+                )
             )
-            dismiss()
+            GlobalScope.launch(Dispatchers.Main) {
+                when (result.code()) {
+                    200 -> {
+                        binding.textView.text = "Summarized Article: ${result.body()!!.choices[0].text}"
+                        binding.progressCircular.visibility = View.GONE
+                    }
+                    else -> {
+                        Log.e("ResultFragment", "Error Summarizing ${result.message()}")
+                        binding.progressCircular.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 }
