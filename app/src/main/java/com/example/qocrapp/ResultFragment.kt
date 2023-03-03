@@ -33,6 +33,7 @@ class ResultFragment(
         savedInstanceState: Bundle?,
     ): View {
         _binding = ResultFragmentBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -44,7 +45,7 @@ class ResultFragment(
         GlobalScope.launch(Dispatchers.IO) {
             val result = chatGptService.completions(
                 CompletionRequest(
-                    prompt = "Summarize this article: $extractedText"
+                    prompt = "Summarize and remove unknown word: $extractedText"
                 )
             )
             GlobalScope.launch(Dispatchers.Main) {

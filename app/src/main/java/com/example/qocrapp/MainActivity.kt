@@ -103,9 +103,6 @@ class MainActivity : AppCompatActivity() {
     private fun openExtractedTextResultFragment(bitmapImage: Bitmap) {
         ExtractedTextResultFragment(
             bitmap = bitmapImage,
-            actionCallback = { extractedText ->
-
-            }
         ).show(supportFragmentManager, ExtractedTextResultFragment::class.simpleName)
     }
 

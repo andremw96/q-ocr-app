@@ -13,7 +13,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
 class ExtractedTextResultFragment(
     private val bitmap: Bitmap,
-    private val actionCallback: (String) -> Unit,
 ) : DialogFragment() {
 
     private var _binding: ExtractedTextResultFragmentBinding? = null
