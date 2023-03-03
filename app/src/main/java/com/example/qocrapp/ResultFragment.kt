@@ -40,15 +40,19 @@ class ResultFragment(
             bitmap
         )
 
+        binding.progressCircular.visibility = View.VISIBLE
         detector.processImage(image)
             .addOnSuccessListener { firebaseVisionText ->
+                binding.progressCircular.visibility = View.GONE
+
                 val resultText = firebaseVisionText.text.replace("\n", " ")
 
                 binding.textView.text = resultText
             }
             .addOnFailureListener { e ->
-                // Task failed with an exception
-                // ...
+                binding.progressCircular.visibility = View.GONE
+
+                binding.textView.text = e.localizedMessage
             }
     }
 }
