@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class CompletionRequest(
     @SerializedName("frequency_penalty")
-    val frequencyPenalty: Int = 0,
+    val frequencyPenalty: Int = 2,
 
     @SerializedName("max_tokens")
-    val maxTokens: Int = 1000,
+    val maxTokens: Int = 512,
 
     @SerializedName("model")
     val model: String = "text-davinci-003",
@@ -19,7 +19,7 @@ data class CompletionRequest(
     val prompt: String,
 
     @SerializedName("temperature")
-    val temperature: Double = 0.7,
+    val temperature: Double = 0.2,
 
     @SerializedName("top_p")
     val topP: Int = 1

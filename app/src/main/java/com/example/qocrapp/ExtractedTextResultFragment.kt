@@ -53,9 +53,11 @@ class ExtractedTextResultFragment(
         )
 
         binding.progressCircular.visibility = View.VISIBLE
+        binding.btnGenerate.isEnabled = false
         detector.processImage(image)
             .addOnSuccessListener { firebaseVisionText ->
                 binding.progressCircular.visibility = View.GONE
+                binding.btnGenerate.isEnabled = true
 
                 val resultText = firebaseVisionText.text.replace("\n", " ")
 

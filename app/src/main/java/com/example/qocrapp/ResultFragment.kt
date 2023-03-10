@@ -47,7 +47,7 @@ class ResultFragment(
         GlobalScope.launch(Dispatchers.IO) {
             val result = chatGptService.completions(
                 CompletionRequest(
-                    prompt = "${context?.getString(actionGenerate.stringResource)} and remove unknown word: $extractedText"
+                    prompt = "${context?.getString(actionGenerate.stringResource)}: $extractedText"
                 )
             )
             GlobalScope.launch(Dispatchers.Main) {
