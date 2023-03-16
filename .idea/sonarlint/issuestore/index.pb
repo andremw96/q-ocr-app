@@ -15,5 +15,3 @@ k
 ;app/src/main/java/com/example/qocrapp/api/ChatGptService.kt,9/5/956cf2d1559a2dabecb0717ce0a0c4c04f7fe4c3
 n
 >app/src/main/java/com/example/qocrapp/api/CompletionRequest.kt,b/e/bea1176a0a58f8e6e62bf8d779d9b493608f2e1d
-e
-5app/src/main/java/com/example/qocrapp/MainActivity.kt,8/c/8c4b6593d96871c8930fc63e5121141e2dc73995

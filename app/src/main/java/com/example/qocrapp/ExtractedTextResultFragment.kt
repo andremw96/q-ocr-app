@@ -9,8 +9,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.example.qocrapp.databinding.ExtractedTextResultFragmentBinding
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 enum class ActionGenerate(
     val stringResource: Int,
@@ -26,10 +27,13 @@ enum class ActionGenerate(
 
 class ExtractedTextResultFragment(
     private val bitmap: Bitmap,
+    private val imageRotationDegrees: Int,
 ) : DialogFragment() {
 
     private var _binding: ExtractedTextResultFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,24 +50,32 @@ class ExtractedTextResultFragment(
 
         binding.textView.movementMethod = ScrollingMovementMethod()
 
-        val detector = FirebaseVision.getInstance()
-            .onDeviceTextRecognizer
-
-        val image = FirebaseVisionImage.fromBitmap(
-            bitmap
+        val image = InputImage.fromBitmap(
+            bitmap,
+            imageRotationDegrees
         )
 
         binding.progressCircular.visibility = View.VISIBLE
         binding.btnGenerate.isEnabled = false
-        detector.processImage(image)
+        recognizer.process(image)
             .addOnSuccessListener { firebaseVisionText ->
                 binding.progressCircular.visibility = View.GONE
                 binding.btnGenerate.isEnabled = true
 
-                val resultText = firebaseVisionText.text.replace("\n", " ")
+//                val resultText = firebaseVisionText.text.replace("\n", " ")
+//                binding.textView.setText(resultText)
 
-                binding.textView.setText(resultText)
-                binding.layoutAction.visibility = View.VISIBLE
+                val stringBuilder = StringBuilder()
+                for (block in firebaseVisionText.textBlocks) {
+                    stringBuilder.append(block.text)
+                    stringBuilder.append("\n\n<---new block-->\n\n")
+                }
+                if (stringBuilder.isEmpty()) {
+                    binding.textView.setText("text not found")
+                } else {
+                    binding.textView.setText(stringBuilder)
+                    binding.layoutAction.visibility = View.VISIBLE
+                }
             }
             .addOnFailureListener { e ->
                 binding.progressCircular.visibility = View.GONE

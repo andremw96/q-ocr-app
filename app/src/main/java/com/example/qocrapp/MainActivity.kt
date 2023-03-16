@@ -89,7 +89,10 @@ class MainActivity : AppCompatActivity() {
                     val bitmapImage = binding.viewFinder.bitmap
 
                     bitmapImage?.let {
-                        openExtractedTextResultFragment(it)
+                        openExtractedTextResultFragment(
+                            bitmapImage = it,
+                            rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                        )
                     }
                 }
 
@@ -100,9 +103,13 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun openExtractedTextResultFragment(bitmapImage: Bitmap) {
+    private fun openExtractedTextResultFragment(
+        bitmapImage: Bitmap,
+        rotationDegrees: Int,
+    ) {
         ExtractedTextResultFragment(
             bitmap = bitmapImage,
+            imageRotationDegrees = rotationDegrees,
         ).show(supportFragmentManager, ExtractedTextResultFragment::class.simpleName)
     }
 
