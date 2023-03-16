@@ -9,11 +9,11 @@
     <string name="unknown">Unknown</string>
     <string name="generate">Generate</string>
 
-    <string name="study_note_action">Study Note and then remove unknown word</string>
+    <string name="study_note_action">Create Study Note from this</string>
     <string name="summary_action">Summary and then remove unknown word</string>
-    <string name="keywords_action">Keywords and then remove unknown word</string>
-    <string name="outline_action">Outline and then remove unknown word</string>
-    <string name="translate_action">Translate and then remove unknown word</string>
-    <string name="solve_action">Solve and then remove unknown word</string>
+    <string name="keywords_action">Create Keywords from this</string>
+    <string name="outline_action">Create outline from this</string>
+    <string name="translate_action"> and then remove unknown word</string>
+    <string name="solve_action">Solve this problem</string>
     <string name="unknown_action">Unknown and then remove unknown word</string>
 </resources>

@@ -6,6 +6,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.example.qocrapp.databinding.ExtractedTextResultFragmentBinding
 import com.google.firebase.ml.vision.FirebaseVision
@@ -61,20 +62,26 @@ class ExtractedTextResultFragment(
 
                 val resultText = firebaseVisionText.text.replace("\n", " ")
 
-                binding.textView.text = resultText
+                binding.textView.setText(resultText)
                 binding.layoutAction.visibility = View.VISIBLE
             }
             .addOnFailureListener { e ->
                 binding.progressCircular.visibility = View.GONE
 
-                binding.textView.text = e.localizedMessage
+                binding.textView.setText(e.localizedMessage)
             }
+
+        binding.chipGroupAction.setOnCheckedStateChangeListener { group, checkedIds ->
+            binding.editTranslateInto.isVisible = checkedIds.contains(R.id.chip_translate)
+        }
 
         binding.btnGenerate.setOnClickListener {
             val checkedAction = checkedChipToActionGenerate(binding.chipGroupAction.checkedChipId)
+            val translateIntoText = binding.editTranslateInto.text.toString()
 
             ResultFragment(
                 extractedText = binding.textView.text.toString(),
+                translateInto = translateIntoText,
                 actionGenerate = checkedAction
             ).show(parentFragmentManager, ResultFragment::class.simpleName)
 
