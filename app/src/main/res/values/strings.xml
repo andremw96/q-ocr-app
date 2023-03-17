@@ -12,12 +12,12 @@
     <string name="translate_into">Translate into what language?</string>
     <string name="insert_any_command">Insert any command to the AI</string>
 
-
-    <string name="study_note_action">Rearrange the text and then create Study Note from this</string>
-    <string name="summary_action">Rearrange the text and then Summary and then remove unknown word</string>
-    <string name="keywords_action">Rearrange the text and then Create Keywords from this</string>
-    <string name="outline_action">Rearrange the text and then Create outline from this</string>
-    <string name="translate_action">Rearrange the text and then </string>
-    <string name="solve_action">Rearrange the text and then Solve this problem</string>
+    <string name="rearrange">Rearrange the text and then </string>
+    <string name="study_note_action">Create Study Note from this</string>
+    <string name="summary_action">Create Summary from this</string>
+    <string name="keywords_action">Create Keywords from this</string>
+    <string name="outline_action">Create outline from this</string>
+    <string name="translate_action">Rearrange the text and then</string>
+    <string name="solve_action">Solve this problem</string>
     <string name="unknown_action">Unknown and then remove unknown word</string>
 </resources>

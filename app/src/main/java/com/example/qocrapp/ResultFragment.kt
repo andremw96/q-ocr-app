@@ -21,6 +21,7 @@ class ResultFragment(
     private val extractedText: String,
     private val freeText: String? = null,
     private val actionGenerate: ActionGenerate,
+    private val isReprocessChecked: Boolean,
 ) : DialogFragment() {
 
     private var _binding: ResultFragmentBinding? = null
@@ -46,17 +47,19 @@ class ResultFragment(
         binding.progressCircular.visibility = View.VISIBLE
         isCancelable = false
         GlobalScope.launch(Dispatchers.IO) {
+            val isNeedReprocess = if (isReprocessChecked) context?.getString(R.string.rearrange) else ""
             val prompt = if (actionGenerate == ActionGenerate.TRANSLATE) {
-                "${context?.getString(actionGenerate.stringResource)} Translate into $freeText: $extractedText"
+                "Translate into $freeText: $extractedText"
             } else if (actionGenerate == ActionGenerate.FREE_TEXT && freeText != null) {
                 "$freeText: $extractedText"
             } else {
                 "${context?.getString(actionGenerate.stringResource)}: $extractedText"
             }
+            val fullPrompt = "$isNeedReprocess $prompt"
 
             val result = chatGptService.completions(
                 CompletionRequest(
-                    prompt = prompt.replace("\n", " ")
+                    prompt = fullPrompt.replace("\n", " ")
                 )
             )
             GlobalScope.launch(Dispatchers.Main) {

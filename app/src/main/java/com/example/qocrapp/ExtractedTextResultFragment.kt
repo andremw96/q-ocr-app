@@ -95,11 +95,13 @@ class ExtractedTextResultFragment(
         binding.btnGenerate.setOnClickListener {
             val checkedAction = checkedChipToActionGenerate(binding.chipGroupAction.checkedChipId)
             val freeText = binding.editTextFreeText.text.toString()
+            val isReprocessChecked = binding.chkboxReprocess.isChecked
 
             ResultFragment(
                 extractedText = binding.textView.text.toString(),
                 freeText = freeText,
-                actionGenerate = checkedAction
+                actionGenerate = checkedAction,
+                isReprocessChecked = isReprocessChecked,
             ).show(parentFragmentManager, ResultFragment::class.simpleName)
 
             dismiss()
