@@ -1,6 +1,7 @@
 package com.example.qocrapp
 
 import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
@@ -22,11 +23,13 @@ enum class ActionGenerate(
     OUTLINE(R.string.outline_action),
     TRANSLATE(R.string.translate_action),
     SOLVE(R.string.solve_action),
+    FREE_TEXT(-1),
     UNKNOWN(R.string.unknown)
 }
 
 class ExtractedTextResultFragment(
     private val bitmap: Bitmap,
+    private val image: Image,
     private val imageRotationDegrees: Int,
 ) : DialogFragment() {
 
@@ -50,8 +53,8 @@ class ExtractedTextResultFragment(
 
         binding.textView.movementMethod = ScrollingMovementMethod()
 
-        val image = InputImage.fromBitmap(
-            bitmap,
+        val image = InputImage.fromMediaImage(
+            image,
             imageRotationDegrees
         )
 
@@ -62,13 +65,10 @@ class ExtractedTextResultFragment(
                 binding.progressCircular.visibility = View.GONE
                 binding.btnGenerate.isEnabled = true
 
-//                val resultText = firebaseVisionText.text.replace("\n", " ")
-//                binding.textView.setText(resultText)
-
                 val stringBuilder = StringBuilder()
                 for (block in firebaseVisionText.textBlocks) {
                     stringBuilder.append(block.text)
-                    stringBuilder.append("\n\n<---new block-->\n\n")
+                    stringBuilder.append("\n\n")
                 }
                 if (stringBuilder.isEmpty()) {
                     binding.textView.setText("text not found")
@@ -84,16 +84,21 @@ class ExtractedTextResultFragment(
             }
 
         binding.chipGroupAction.setOnCheckedStateChangeListener { group, checkedIds ->
-            binding.editTranslateInto.isVisible = checkedIds.contains(R.id.chip_translate)
+            binding.editTextFreeText.isVisible = checkedIds.contains(R.id.chip_translate) || checkedIds.contains(R.id.chip_free_text)
+            if (checkedIds.contains(R.id.chip_translate)) {
+                binding.editTextFreeText.hint = getString(R.string.translate_into)
+            } else if (checkedIds.contains(R.id.chip_free_text)) {
+                binding.editTextFreeText.hint = getString(R.string.insert_any_command)
+            }
         }
 
         binding.btnGenerate.setOnClickListener {
             val checkedAction = checkedChipToActionGenerate(binding.chipGroupAction.checkedChipId)
-            val translateIntoText = binding.editTranslateInto.text.toString()
+            val freeText = binding.editTextFreeText.text.toString()
 
             ResultFragment(
                 extractedText = binding.textView.text.toString(),
-                translateInto = translateIntoText,
+                freeText = freeText,
                 actionGenerate = checkedAction
             ).show(parentFragmentManager, ResultFragment::class.simpleName)
 
@@ -109,6 +114,7 @@ class ExtractedTextResultFragment(
             R.id.chip_outline -> ActionGenerate.OUTLINE
             R.id.chip_translate -> ActionGenerate.TRANSLATE
             R.id.chip_solve -> ActionGenerate.SOLVE
+            R.id.chip_free_text -> ActionGenerate.FREE_TEXT
             else -> ActionGenerate.UNKNOWN
         }
     }

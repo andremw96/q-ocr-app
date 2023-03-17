@@ -2,6 +2,7 @@ package com.example.qocrapp
 
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -88,11 +89,14 @@ class MainActivity : AppCompatActivity() {
                 override fun onCaptureSuccess(imageProxy: ImageProxy) {
                     val bitmapImage = binding.viewFinder.bitmap
 
-                    bitmapImage?.let {
-                        openExtractedTextResultFragment(
-                            bitmapImage = it,
-                            rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                        )
+                    imageProxy.image?.let {
+                        if (bitmapImage != null) {
+                            openExtractedTextResultFragment(
+                                bitmapImage = bitmapImage,
+                                image = it,
+                                rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                            )
+                        }
                     }
                 }
 
@@ -106,9 +110,11 @@ class MainActivity : AppCompatActivity() {
     private fun openExtractedTextResultFragment(
         bitmapImage: Bitmap,
         rotationDegrees: Int,
+        image: Image,
     ) {
         ExtractedTextResultFragment(
             bitmap = bitmapImage,
+            image = image,
             imageRotationDegrees = rotationDegrees,
         ).show(supportFragmentManager, ExtractedTextResultFragment::class.simpleName)
     }

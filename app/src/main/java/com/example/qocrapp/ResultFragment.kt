@@ -19,7 +19,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ResultFragment(
     private val extractedText: String,
-    private val translateInto: String? = null,
+    private val freeText: String? = null,
     private val actionGenerate: ActionGenerate,
 ) : DialogFragment() {
 
@@ -46,9 +46,17 @@ class ResultFragment(
         binding.progressCircular.visibility = View.VISIBLE
         isCancelable = false
         GlobalScope.launch(Dispatchers.IO) {
+            val prompt = if (actionGenerate == ActionGenerate.TRANSLATE) {
+                "${context?.getString(actionGenerate.stringResource)} Translate into $freeText: $extractedText"
+            } else if (actionGenerate == ActionGenerate.FREE_TEXT && freeText != null) {
+                "$freeText: $extractedText"
+            } else {
+                "${context?.getString(actionGenerate.stringResource)}: $extractedText"
+            }
+
             val result = chatGptService.completions(
                 CompletionRequest(
-                    prompt = if (actionGenerate == ActionGenerate.TRANSLATE) "Translate into $translateInto ${context?.getString(actionGenerate.stringResource)}: $extractedText" else "${context?.getString(actionGenerate.stringResource)}: $extractedText"
+                    prompt = prompt.replace("\n", " ")
                 )
             )
             GlobalScope.launch(Dispatchers.Main) {
