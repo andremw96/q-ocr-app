@@ -23,6 +23,7 @@ enum class ActionGenerate(
     OUTLINE(R.string.outline_action),
     TRANSLATE(R.string.translate_action),
     SOLVE(R.string.solve_action),
+    GEN_QUESTION(R.string.gen_question_action),
     FREE_TEXT(-1),
     UNKNOWN(R.string.unknown)
 }
@@ -116,6 +117,7 @@ class ExtractedTextResultFragment(
             R.id.chip_outline -> ActionGenerate.OUTLINE
             R.id.chip_translate -> ActionGenerate.TRANSLATE
             R.id.chip_solve -> ActionGenerate.SOLVE
+            R.id.chip_gen_question -> ActionGenerate.GEN_QUESTION
             R.id.chip_free_text -> ActionGenerate.FREE_TEXT
             else -> ActionGenerate.UNKNOWN
         }
